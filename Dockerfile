@@ -43,18 +43,13 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends tini curl ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
-# Non-root user
-RUN groupadd --system --gid 1000 mcp \
- && useradd  --system --uid 1000 --gid mcp --create-home --shell /bin/bash mcp
-
 # Bring the installed package + its dependencies from the builder
 COPY --from=builder /opt/venv /opt/venv
 
 # Mount your Anthropic-format skills directory here at runtime
-RUN mkdir -p /skills && chown -R mcp:mcp /skills
+RUN mkdir -p /skills
 
-USER mcp
-WORKDIR /home/mcp
+WORKDIR /root
 
 # Tunables (override with `docker run -e VAR=...`)
 ENV MCP_CONFIG=default \
